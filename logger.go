@@ -8,14 +8,21 @@ import (
 	"github.com/GOAggregate/logger/handlers/slogpretty"
 )
 
-func Init(logLevel slog.Level, logFile string) *slog.Logger {
+type LogLevel string
+
+const (
+	LogLevelDebug LogLevel = "debug"
+	LogLevelInfo  LogLevel = "info"
+)
+
+func Init(logLevel LogLevel, logFile string) *slog.Logger {
 	var log *slog.Logger
 
 	if logFile == "" {
 		switch logLevel {
-		case slog.LevelDebug:
+		case LogLevelDebug:
 			slogpretty.NewPrettyHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
-		case slog.LevelInfo:
+		case LogLevelInfo:
 			slogpretty.NewPrettyHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})
 		default:
 			panic("log level not supported. Supported levels: debug, info")
@@ -23,11 +30,11 @@ func Init(logLevel slog.Level, logFile string) *slog.Logger {
 	}
 
 	switch logLevel {
-	case slog.LevelDebug:
+	case LogLevelDebug:
 		log = slog.New(
 			slog.NewJSONHandler(getFileToWrite(logFile), &slog.HandlerOptions{Level: slog.LevelDebug}),
 		)
-	case slog.LevelInfo:
+	case LogLevelInfo:
 		log = slog.New(
 			slog.NewJSONHandler(getFileToWrite(logFile), &slog.HandlerOptions{Level: slog.LevelInfo}),
 		)
